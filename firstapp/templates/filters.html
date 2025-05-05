@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+
+{% block title %} Filters {% endblock %}
+
+{% block content %}
+
+    <h1>Filters</h1>
+    <p>{{ text|upper }}</p>
+    <p>{{ text|title }}</p>
+    <p>{{ text|lower }}</p>
+    <p>{{ text|replace('l','L') }}</p>
+    <p>{{ text|custom }}</p>
+    <p>{{ text|alt }}</p>
+
+{%endblock%}

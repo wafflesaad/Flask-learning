@@ -1,6 +1,69 @@
-from flask import Flask, request, make_response, render_template
+from flask import Flask, request, make_response, render_template, redirect, url_for, Response
+import cv2
+import pandas as pd
 
 app = Flask(__name__, template_folder="templates")
+
+
+
+@app.route('/form', methods=['GET','POST'])
+def form():
+    if request.method == 'GET':
+        return render_template("form.html")
+    elif request.method == 'POST':
+        formData = request.form;
+
+        if 'username' not in formData.keys() or 'password' not in formData.keys():
+            res =  make_response()    
+            res.status_code = 401
+            return res
+        
+        username = formData.get('username')
+        password = formData.get('password')
+
+        if username == 'saad' and password == '1234':
+            return 'success'
+        else:
+            return 'fail'        
+
+
+@app.route("/pfpUpload", methods=['POST'])
+def pfpUpload():
+    pfp = request.files["pfp"]
+
+    if pfp.content_type.startswith("image/"):
+        pfpPath = f"./{pfp.filename}"
+
+        pfp.save(pfpPath)
+
+        im = cv2.imread(pfpPath)
+        cv2.imshow('pfp', im)
+
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+        return "success"
+    
+    return "fail"
+
+@app.route('/tocsv', methods=["POST"])
+def tocsv():
+
+    file = request.files["excel"]
+
+    df = pd.read_excel(file)
+
+    csv = df.to_csv()
+
+    res = Response(
+        csv,
+        mimetype='text/csv',
+        headers={
+            'Content-Disposition': 'attachment; filename=result.csv'
+        }
+    )
+
+    return res
 
 @app.route("/")
 def index():
@@ -11,6 +74,24 @@ def index():
 
     return render_template("index.html", str=x,num=y, l=myList)
 
+
+# @app.route("/filter")
+# def filters():
+#     text = "hello world"
+
+#     return render_template("filters.html", text=text)
+
+# @app.template_filter('custom')
+# def reverseString(s):
+#     return s[::-1]
+
+# @app.template_filter('alt')
+# def alt(s):
+#     return ''.join([c.upper() if i % 2 == 0 else c.lower() for i, c in enumerate(s)])
+
+# @app.route("/redirect")
+# def redirectUrl():
+#     return redirect(url_for('filters'))
 
 # @app.route('/')
 # def index():
