@@ -1,0 +1,22 @@
+{%extends "base.html"%}
+
+
+{% block content %}
+    <h1>
+        OOOOOOOOOOOOO
+    </h1>
+    <p>{{ str }}</p>
+    <p>{{ num }}</p>
+
+    <ol>
+        {% for item in l %}
+
+        {%if item > 50 %}
+        
+        <li>{{item}}</li>
+
+        {%endif %}
+
+        {% endfor %}
+    </ol>
+{% endblock %}
