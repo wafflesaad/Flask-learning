@@ -1,78 +1,120 @@
-from flask import Flask, request, make_response, render_template, redirect, url_for, Response
+from flask import Flask, request, make_response, render_template, redirect, url_for, Response, send_from_directory, session
 import cv2
 import pandas as pd
+import os
+import uuid
 
 app = Flask(__name__, template_folder="templates")
-
-
-
-@app.route('/form', methods=['GET','POST'])
-def form():
-    if request.method == 'GET':
-        return render_template("form.html")
-    elif request.method == 'POST':
-        formData = request.form;
-
-        if 'username' not in formData.keys() or 'password' not in formData.keys():
-            res =  make_response()    
-            res.status_code = 401
-            return res
-        
-        username = formData.get('username')
-        password = formData.get('password')
-
-        if username == 'saad' and password == '1234':
-            return 'success'
-        else:
-            return 'fail'        
-
-
-@app.route("/pfpUpload", methods=['POST'])
-def pfpUpload():
-    pfp = request.files["pfp"]
-
-    if pfp.content_type.startswith("image/"):
-        pfpPath = f"./{pfp.filename}"
-
-        pfp.save(pfpPath)
-
-        im = cv2.imread(pfpPath)
-        cv2.imshow('pfp', im)
-
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
-        return "success"
-    
-    return "fail"
-
-@app.route('/tocsv', methods=["POST"])
-def tocsv():
-
-    file = request.files["excel"]
-
-    df = pd.read_excel(file)
-
-    csv = df.to_csv()
-
-    res = Response(
-        csv,
-        mimetype='text/csv',
-        headers={
-            'Content-Disposition': 'attachment; filename=result.csv'
-        }
-    )
-
-    return res
+app.secret_key = '1234'
 
 @app.route("/")
 def index():
-    x = "Hello" 
-    y = 4
+    
 
-    myList = [2,43,71,14,651]
+    return render_template("index.html", message="Index")
 
-    return render_template("index.html", str=x,num=y, l=myList)
+
+@app.route("/s")
+def s():
+    session['name'] = 'Saad'
+    session['pass'] = '1234'
+    return render_template("index.html", message="Sessionset")
+
+@app.route('/gets')
+def gets():
+    try:
+        name = session['name']
+        passw = session['pass']
+    except:
+        
+        return render_template('index.html', message='Error accessing data')    
+
+    
+    return render_template('index.html', message=f'Name: {name}, Password: {passw}')
+
+# @app.route('/form', methods=['GET','POST'])
+# def form():
+#     if request.method == 'GET':
+#         return render_template("form.html")
+#     elif request.method == 'POST':
+#         formData = request.form;
+
+#         if 'username' not in formData.keys() or 'password' not in formData.keys():
+#             res =  make_response()    
+#             res.status_code = 401
+#             return res
+        
+#         username = formData.get('username')
+#         password = formData.get('password')
+
+#         if username == 'saad' and password == '1234':
+#             return 'success'
+#         else:
+#             return 'fail'        
+
+
+# @app.route("/pfpUpload", methods=['POST'])
+# def pfpUpload():
+#     pfp = request.files["pfp"]
+
+#     if pfp.content_type.startswith("image/"):
+#         pfpPath = f"./{pfp.filename}"
+
+#         pfp.save(pfpPath)
+
+#         im = cv2.imread(pfpPath)
+#         cv2.imshow('pfp', im)
+
+#         cv2.waitKey(0)
+#         cv2.destroyAllWindows()
+
+#         return "success"
+    
+#     return "fail"
+
+# @app.route('/tocsv', methods=["POST"])
+# def tocsv():
+
+#     file = request.files["excel"]
+
+#     df = pd.read_excel(file)
+
+#     csv = df.to_csv()
+
+#     res = Response(
+#         csv,
+#         mimetype='text/csv',
+#         headers={
+#             'Content-Disposition': 'attachment; filename=result.csv'
+#         }
+#     )
+
+#     return res
+
+# @app.route("/tocsv2", methods=['POST'])
+# def tocsv2():
+#     file = request.files["excel"]
+
+#     if not file:
+#         return "fail"
+    
+#     df = pd.read_excel(file)
+
+#     if not os.path.exists('downloads'):
+#         os.makedirs('downloads')
+
+#     filename = f"{uuid.uuid4()}.csv" 
+
+#     df.to_csv(os.path.join('downloads', filename))
+    
+#     return render_template("download.html", filename=filename)
+
+
+# @app.route('/download/<filename>')
+# def download(filename):
+#     print(os.path.exists(f'downloads/{filename}'))
+#     return send_from_directory('downloads', filename, download_name='csvfile.csv')
+
 
 
 # @app.route("/filter")

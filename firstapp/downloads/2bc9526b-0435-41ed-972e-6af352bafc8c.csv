@@ -1,0 +1,9 @@
+,Day,Starting Time,End TIme,Hours worked
+0,Monday,19:00:00,01:00:00,6.0
+1,Tuesday,19:00:00,01:00:00,6.0
+2,Wednesday,19:00:00,00:00:00,5.0
+3,Thursday,18:00:00,01:00:00,7.0
+4,Friday,15:00:00,23:00:00,8.0
+5,Saturday,12:00:00,20:00:00,8.0
+6,Sunday,Off,Off,
+7,,,Total hours:,40.0

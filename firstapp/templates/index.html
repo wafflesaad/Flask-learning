@@ -2,25 +2,13 @@
 
 
 {% block content %}
-    <h1>
-        OOOOOOOOOOOOO
-    </h1>
-    <p>{{ str }}</p>
-    <p>{{ num }}</p>
-
-    <ol>
-        {% for item in l %}
-
-        {%if item > 50 %}
-        
-        <li>{{item}}</li>
-
-        {%endif %}
-
-        {% endfor %}
-    </ol>
+    
+    <h1>Index</h1>
 
 
-    <a href="{{ url_for('filters') }}">Filters</a>
+    <p>{{message}}</p>
+
+    <a href="{{url_for('s')}}">Set session</a>
+    <a href="{{url_for('gets')}}">Get session</a>
 
 {% endblock %}
